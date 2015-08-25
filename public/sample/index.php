@@ -1,18 +1,23 @@
 <?php
-define('BASE_DIR', __DIR__ . "/..");
+include __DIR__ . '/../common.php';
 
-use Slim\Slim;
+// define the base directory of the current application
+define('APP_ENV', APP_ENV_DEVELOPMENT);
+define('APP_DIR', BASE_DIR . '/apps/sample');
 
-// Load php configuration file & initialize the autoloader
-$config = require BASE_DIR . '/app/etc/config.php';
-$loader = require BASE_DIR . '/vendor/autoload.php';
+$app = new Slim\Slim(array('mode' => APP_ENV));
 
-$app = new Slim($config);
+// load configuration files
+$app->configureMode(APP_ENV, function () use ($app) {
+    $config = include APP_DIR . '/etc/' . APP_ENV . '.php';
+    $app->config($config);
+});
 
-// Automatically load router files
-$routers = glob(BASE_DIR . '/app/routers/*.router.php');
-foreach ($routers as $router) {
-    require $router;
+// initialize the routers
+$routers = glob(APP_DIR . '/routers/*.router.php');
+foreach ($routers as $route) {
+    include $route;
 }
+unset($route, $routers);
 
 $app->run();

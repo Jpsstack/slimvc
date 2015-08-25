@@ -5,15 +5,37 @@ namespace Slimvc\Core;
  * Base Abstract Model class
  *
  */
-abstract class Model extends Object
+abstract class Model
 {
-    protected static $config = array();
+    protected $appName = "default";
+    protected $config = array();
+
     protected static $readAdapter = NULL;
     protected static $writeAdapter = NULL;
 
-    const DB_CONNECTION_WRITE = 2; // 010
-    const DB_CONNECTION_READ =  4; // 100
-    const DB_CONNECTION_BOTH =  6; // 110
+    const DB_CONNECTION_WRITE = 1; // 001
+    const DB_CONNECTION_READ =  2; // 010
+    const DB_CONNECTION_BOTH =  3; // 011
+
+    /**
+     * Gets the Slim Application instance
+     *
+     * @return \Slim\Slim
+     */
+    protected function getApp()
+    {
+        return \Slim\Slim::getInstance($this->appName);
+    }
+
+    /**
+     * Gets the configuration instance of the related Slim Application
+     *
+     * @return array
+     */
+    protected function getConfig()
+    {
+        return $this->config;
+    }
 
     /**
      * Constructor
@@ -22,8 +44,10 @@ abstract class Model extends Object
      */
     public function __construct($config = array())
     {
+        $this->config = $this->getApp()->container['settings'];
+
         if ($config && is_array($config)) {
-            self::$config = $config;
+            $this->config = array_merge($config, $this->config);
         }
     }
 
@@ -37,7 +61,7 @@ abstract class Model extends Object
     protected function getConnection($type = self::DB_CONNECTION_BOTH)
     {
         // TODO implements connection instance in your way, here using PDO for example
-        $dbConfig = self::$config['pdo']['default'];
+        $dbConfig = $this->config['pdo']['default'];
 
         $dbh = new \PDO(
             $dbConfig['dsn'],
@@ -46,8 +70,7 @@ abstract class Model extends Object
             $dbConfig['options']
         );
         $dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $dbh->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false); //禁用prepared statements的仿真效果
-        $dbh->exec("SET NAMES 'utf8';");
+        $dbh->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false); // disable prepared statements
 
         return $dbh;
     }

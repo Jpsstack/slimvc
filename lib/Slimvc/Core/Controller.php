@@ -3,7 +3,8 @@ namespace Slimvc\Core;
 
 abstract class Controller
 {
-    protected $appname = "default";
+    protected $appName = "default";
+    protected $config = array();
 
     /**
      * Gets the Slim Application instance
@@ -12,7 +13,7 @@ abstract class Controller
      */
     protected function getApp()
     {
-        return \Slim\Slim::getInstance($this->appname);
+        return \Slim\Slim::getInstance($this->appName);
     }
 
     /**
@@ -22,7 +23,21 @@ abstract class Controller
      */
     protected function getConfig()
     {
-        return $this->getApp()->container['settings'];
+        return $this->config;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param array $config the configurations
+     */
+    public function __construct($config = array())
+    {
+        $this->config = $this->getApp()->container['settings'];
+
+        if ($config && is_array($config)) {
+            $this->config = array_merge($config, $this->config);
+        }
     }
 
     /**

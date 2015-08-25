@@ -1,15 +1,21 @@
 <?php
+namespace Sample\Controller;
+
+
 use Slimvc\Core\Controller;
 
 class IndexController extends Controller
 {
-    public function index()
+    /**
+     * Default index action
+     */
+    public function actionIndex()
     {
-        var_dump(__METHOD__);
+        $this->getApp()->contentType('text/html');
 
         $data = array(
             'title' => 'It works!',
-            'content' => 'Just have fun with the Slim in MVC way now!'
+            'content' => 'Have fun with Slim framework in MVC way!'
         );
 
         $this->render("index/index.phtml", $data);
