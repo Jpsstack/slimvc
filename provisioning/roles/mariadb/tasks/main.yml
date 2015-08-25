@@ -1,0 +1,21 @@
+---
+#- name: Uninstall MySQL 5.1 libs if applicable
+#  yum: name=mysql-libs state=removed
+
+- name: Install MariaDB Server
+  yum: name={{ item }} state=installed
+  with_items:
+    - mariadb-server
+    - mariadb-libs
+
+- name: Ensure mariadb service enabled
+  service: name=mariadb state=restarted enabled=yes
+
+- name: Install MySQL driver for Python
+  yum: name=MySQL-python state=installed
+
+- name: Create new database with name 'sample'
+  mysql_db: name=sample state=present
+
+- name: Import sample records
+  mysql_db: state=import name=sample target={{mysql_dump_file}}

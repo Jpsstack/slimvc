@@ -1,0 +1,12 @@
+nginx_vhosts: [
+  {
+    server_name: "www.example.com",
+    server_aliases: [],
+    root: "/var/www/htdocs/example/public/web"
+  },
+  {
+    server_name: "api.example.com",
+    server_aliases: [],
+    root: "/var/www/htdocs/example/public/api"
+  }
+]

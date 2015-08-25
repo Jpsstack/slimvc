@@ -1,0 +1,92 @@
+
+{% for nginx_vhost in nginx_vhosts %}
+server {
+    listen                  80;
+
+    {% if nginx_vhost.aliases is defined %}
+    server_name             {{ nginx_vhost.server_name }}{% for server_alias in nginx_vhost.server_aliases %} {{ server_alias }} {% endfor %};
+    {% else %}
+    server_name             {{ nginx_vhost.server_name }};
+    {% endif %}
+    root                    {{ nginx_vhost.root }};
+    index                   index.php;
+
+    access_log  /var/log/nginx/access-{{ nginx_vhost.server_name }}.log  main;
+    error_log  /var/log/nginx/error-{{ nginx_vhost.server_name }}.log;
+
+    gzip  on;
+    gzip_static on;
+    gzip_http_version 1.0;
+    gzip_disable "MSIE [1-6].";
+    gzip_vary on;
+
+    gzip_comp_level 9;
+    gzip_proxied any;
+    gzip_types text/plain text/css application/x-javascript text/xml application/xml application/json application/xml+rss text/javascript image/png image/gif image/jpeg;
+
+    fastcgi_buffers 8 16k;
+    fastcgi_buffer_size 32k;
+    fastcgi_read_timeout 180;
+
+    include restrictions.conf;
+
+    # Directives to send expires headers and turn off 404 error logging.
+    location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
+       access_log off;
+       log_not_found off;
+       expires max;
+    }
+
+    # This order might seem weird - this is attempted to match last if rules below fail.
+    # http://wiki.nginx.org/HttpCoreModule
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # Pass all .php files onto a php-fpm/php-fcgi server.
+    location ~ [^/]\.php(/|$) {
+        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+        if (!-f $document_root$fastcgi_script_name) {
+            return 404;
+        }
+        # This is a robust solution for path info security issue and works with "cgi.fix_pathinfo = 1" in /etc/php.ini (default)
+
+        #include fastcgi.conf;
+        fastcgi_index index.php;
+        fastcgi_connect_timeout 3s;     # default of 60s is just too long
+        fastcgi_read_timeout 10s;       # default of 60s is just too long
+
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_pass 127.0.0.1:9000;    # assumes you are running php-fpm locally on port 9000
+    }
+
+    {% if nginx_vhost.subfolders is defined %}
+    {% for subfolder in nginx_vhost.subfolders %}
+    # This order might seem weird - this is attempted to match last if rules below fail.
+    # http://wiki.nginx.org/HttpCoreModule
+    location /{{ subfolder }} {
+        try_files $uri $uri/ /{{ subfolder }}/index.php?$query_string;
+    }
+
+    location ~ /{{ subfolder }}/.+\.php$ {
+        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+        if (!-f $document_root$fastcgi_script_name) {
+            return 404;
+        }
+        # This is a robust solution for path info security issue and works with "cgi.fix_pathinfo = 1" in /etc/php.ini (default)
+
+        #include fastcgi.conf;
+        fastcgi_index index.php;
+        fastcgi_connect_timeout 3s;     # default of 60s is just too long
+        fastcgi_read_timeout 10s;       # default of 60s is just too long
+
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_pass 127.0.0.1:9000;    # assumes you are running php-fpm locally on port 9000
+    }
+    {% endfor %}
+    {% endif %}
+
+}
+{% endfor %}

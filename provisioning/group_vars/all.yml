@@ -1,0 +1,8 @@
+nginx_vhosts: [
+  {
+    server_name: "slimvc.dev",
+    server_aliases: [],
+    root: "/var/www/htdocs/slimvc/public/sample"
+  }
+]
+mysql_dump_file: "/var/www/htdocs/slimvc/apps/sample/sql/sample.sql"

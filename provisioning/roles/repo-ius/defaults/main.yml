@@ -1,0 +1,5 @@
+---
+# http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/repoview/ius-release.html
+# http://dl.iuscommunity.org/pub/ius/stable/CentOS/7/x86_64/repoview/ius-release.html
+
+ius_rpm_url: "http://dl.iuscommunity.org/pub/ius/stable/CentOS/{{ansible_distribution_major_version}}/{{ansible_architecture}}/ius-release-1.0-14.ius.centos{{ansible_distribution_major_version}}.noarch.rpm"
