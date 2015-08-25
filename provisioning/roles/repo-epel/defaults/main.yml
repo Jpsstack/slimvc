@@ -1,0 +1,11 @@
+---
+# http://dl.fedoraproject.org/pub/epel/6/x86_64/repoview/epel-release.html
+# http://dl.fedoraproject.org/pub/epel/7/x86_64/repoview/epel-release.html
+
+epel_release:
+  "4": 10
+  "5": 4
+  "6": 8
+  "7": 5
+
+epel_rpm_url: "http://dl.fedoraproject.org/pub/epel/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}{{ '/' if ansible_distribution_major_version < '7' else '/e/' }}epel-release-{{ ansible_distribution_major_version }}-{{ epel_release[ansible_distribution_major_version] }}.noarch.rpm"

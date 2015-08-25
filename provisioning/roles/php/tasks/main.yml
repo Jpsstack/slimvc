@@ -1,0 +1,29 @@
+---
+- name: Install PHP related packages
+  yum: name={{ item }} state=present
+  with_items:
+      - php56u
+      - php56u-devel
+      - php56u-fpm
+      - php56u-gd
+      - php56u-mbstring
+      - php56u-mcrypt
+      - php56u-mysqlnd
+      - php56u-pdo
+      - php56u-tidy
+      #- php56u-xml
+      - php56u-pecl-xdebug
+      - php56u-opcache
+  register: yum_php
+
+- service: name=php-fpm state=restarted  enabled=yes
+  when: yum_php.changed
+
+- name: Download Composer
+  shell: curl -sS https://getcomposer.org/installer | php
+  register: composer_download
+  when: yum_php.changed
+
+- name: Makes Comploser avaiable globally
+  shell: mv composer.phar /usr/bin/composer
+  when: composer_download.changed

@@ -1,0 +1,10 @@
+nginx_vhosts: [
+  {
+    server_name: "www.example.com",
+    subfolders: [
+      "api",
+      "web",
+    ],
+    root: "/var/www/htdocs/example/public"
+  }
+]

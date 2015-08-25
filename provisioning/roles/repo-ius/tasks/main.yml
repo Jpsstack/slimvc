@@ -1,0 +1,5 @@
+---
+- name: Install IUS repository.
+  yum:
+    name: "{{ ius_rpm_url }}"
+    state: present

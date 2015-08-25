@@ -1,0 +1,15 @@
+---
+# Ansible playbook for a LNMP environment
+# Install Nginx, Mariadb(MySQL), PHP-FPM
+#
+# @author Ryan Cao (2015)
+
+# Apply common configuration for all hosts
+- hosts: all
+  roles:
+   - repo-epel
+   - repo-ius
+   - ntp
+   - nginx
+   - php
+   - mariadb

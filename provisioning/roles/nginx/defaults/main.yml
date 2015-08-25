@@ -1,0 +1,32 @@
+---
+
+nginx_vhosts: []
+# Example 1 (subfolder mode):
+#
+#nginx_vhosts: [
+#  {
+#    server_name: "{{ ansible_hostname }}",
+#    root: "/var/www/htdocs/websites",
+#    Set value for subfolders to enable multiple websites under subfolder mode as your requirement
+#    subfolders: ["website1", "website2"],
+#    Set server_aliases to enable multipe domain for single website 
+#    server_aliases: ["website-domain1.com", "website-domain2.com"]
+#  }
+#]
+
+# Example 2 (subdomain mode):
+#
+#nginx_vhosts: [
+#  {
+#    server_name: "www.website1.com",
+#    root: "/var/www/htdocs/website1",
+#    Set server_aliases to enable multipe domain for single website 
+#    server_aliases: ["website1-domain1.com", "website1-domain2.com"]
+#  },
+#  {
+#    server_name: "www.website2.com",
+#    root: "/var/www/htdocs/website2",
+#    Set server_aliases to enable multipe domain for single website 
+#    server_aliases: ["website2-domain1.com", "website2-domain2.com"]
+#  }
+#]

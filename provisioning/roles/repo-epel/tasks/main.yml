@@ -1,0 +1,5 @@
+---
+- name: Install EPEL repository.
+  yum:
+    name: "{{ epel_rpm_url }}"
+    state: present
