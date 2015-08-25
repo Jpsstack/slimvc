@@ -7,14 +7,12 @@
     "license":"MIT",
     "autoload": {
         "psr-4": {
-            "": [
-                "app/controllers",
-                "app/models",
-                "app/middlewares"
-            ],
-            "Slimvc\\": "lib/Slimvc"
-        },
-        "files": ["lib/Slimvc/Core/functions.php"]
+            "Slimvc\\": "lib/Slimvc",
+
+            "Sample\\Controller\\": "apps/sample/controllers",
+            "Sample\\Model\\": "apps/sample/models",
+            "Sample\\Middlewares\\": "apps/sample/middlewares"
+        }
     },
     "require": {
         "slim/slim": "2.*"
@@ -23,7 +21,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "2.0.x-dev"
         }
     }
 }
