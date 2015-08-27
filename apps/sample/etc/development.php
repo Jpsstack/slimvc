@@ -12,7 +12,7 @@ return array(
     'templates.path' => APP_DIR . '/views',
 
     // Logging settings
-    'logs.level' => Slim\Log::DEBUG,
+    'log.level' => Slim\Log::DEBUG,
 
     // PDO database settings
     'pdo' => array(

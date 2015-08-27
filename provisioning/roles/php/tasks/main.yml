@@ -24,6 +24,9 @@
   register: composer_download
   when: yum_php.changed
 
-- name: Makes Comploser avaiable globally
+- name: Makes Composer avaiable globally
   shell: mv composer.phar /usr/bin/composer
   when: composer_download.changed
+
+- name: Install Composer dependencies
+  shell: composer update -vvv --profile --no-dev --working-dir {{ project_base_dir }}
